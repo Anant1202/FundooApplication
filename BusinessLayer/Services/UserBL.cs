@@ -27,6 +27,18 @@ namespace BusinessLayer.Services
                 throw ex;
 	        }
         }
+        public UserEntity Login(LoginModel loginModel)
+        {
+            try
+            {
+                return userRL.Login(loginModel);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
     }
 }
 
