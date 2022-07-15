@@ -1,4 +1,5 @@
 ﻿using CommonLayer.Model;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RepositoryLayer.Context;
 using RepositoryLayer.Entities;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 
 namespace RepositoryLayer.Services
@@ -14,9 +16,11 @@ namespace RepositoryLayer.Services
     public class UserRL:IUserRL 
     {
         private readonly FundooContext fundooContext;
-        public UserRL(FundooContext fundooContext)
+        private readonly IConfiguration configuration;
+        public UserRL(FundooContext fundooContext, IConfiguration configuration)
         {
             this.fundooContext = fundooContext;
+            this.configuration = configuration;
         }
         public UserEntity Register(UserRegistrationModel userRegistrationModel)
         {
@@ -44,28 +48,35 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        public string GenerateJSONWebToken(LoginModel userInfo)
+        public string GenerateSecurityToken(string email,long id)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes("Jwt:Key");
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim("UserId", id.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
 
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-              _config["Jwt:Issuer"],
-              null,
-              expires: DateTime.Now.AddMinutes(120),
-              signingCredentials: credentials);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return tokenHandler.WriteToken(token);
+
         }
-        public UserEntity Login(LoginModel loginModel)
+        public string Login(LoginModel loginModel)
         {
             try
             {
                 var data = fundooContext.User.SingleOrDefault(x => x.EmailID == loginModel.EmailID && x.Password == loginModel.Password);
                 if(data != null)
                 {
-                    var tokenString = GenerateJSONWebToken(data.EmailID, data.Password);
-                    return tokenString;
+                    var token = GenerateSecurityToken(data.EmailID, data.UserId);
+                    return token;
                 }
                 else
                 {

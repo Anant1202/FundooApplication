@@ -27,5 +27,18 @@ namespace FundooApplication.Controllers
                 return this.BadRequest(new { success = false, message = "Registration is Unsuccessful"});
             }
         }
+        [HttpPost("Login")]
+        public IActionResult Login(LoginModel loginModel)
+        {
+            var result = userBL.Login(loginModel);
+            if (result != null)
+            {
+                return this.Ok(new { success = true, message = "Login is Successful", data = result });
+            }
+            else
+            {
+                return this.NotFound(new { success = false, message = "Login is Unsuccessful" });
+            }
+        }
     }
 }
