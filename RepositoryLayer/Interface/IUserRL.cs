@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RepositoryLayer.Interface
 {
-    public interface IUserRL
+    public interface IUserRL 
     {
         public UserEntity Register(UserRegistrationModel userRegistrationModel);
         public string Login(LoginModel loginModel);
