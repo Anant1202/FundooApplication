@@ -30,6 +30,7 @@ namespace RepositoryLayer.Services
                 noteEntity.Remainder=noteCreateModel.Remainder;
                 noteEntity.CreatedAt=noteCreateModel.CreatedAt;
                 noteEntity.Modified = noteCreateModel.Modified;
+                noteEntity.UserId=noteCreateModel.UserId;
                 fundooContext.NotesTable.Add(noteEntity);
                 int result = fundooContext.SaveChanges();
                 if (result > 0)

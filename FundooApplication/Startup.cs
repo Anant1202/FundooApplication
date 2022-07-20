@@ -39,6 +39,8 @@ namespace FundooApplication
             services.AddControllers();
             services.AddTransient<IUserBL, UserBL>();
             services.AddTransient<IUserRL, UserRL>();
+            services.AddTransient<INotesBL,NotesBL>();
+            services.AddTransient<INotesRL, NotesRL>();
             services.AddMvc();
             // Enable Swagger   
             services.AddSwaggerGen(c =>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace CommonLayer.Model
@@ -16,5 +17,8 @@ namespace CommonLayer.Model
         public DateTime Remainder { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime Modified { get; set; }
+        [ForeignKey("User")]
+        public long UserId { get; set; }
+        
     }
 }
