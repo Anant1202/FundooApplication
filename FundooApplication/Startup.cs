@@ -41,61 +41,70 @@ namespace FundooApplication
             services.AddTransient<IUserRL, UserRL>();
             services.AddMvc();
             // Enable Swagger   
-            services.AddSwaggerGen(swagger =>
+            services.AddSwaggerGen(c =>
             {
-                //This is to generate the Default UI of Swagger Documentation  
-                swagger.SwaggerDoc("v1", new OpenApiInfo
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Welcome to FundooNotes" });
+
+                var securitySchema = new OpenApiSecurityScheme
+
                 {
-                    Version = "v1",
-                    Title = "JWT Token Authentication API",
-                    Description = "ASP.NET Core 3.1 Web API"
-                });
-                // To Enable authorization using Swagger (JWT)  
-                swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-                {
+
+                    Description = "Using the Authorization header with the Bearer scheme.",
+
                     Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
+
                     In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
-                });
-                swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
+
+                    Type = SecuritySchemeType.Http,
+
+                    Scheme = "bearer",
+
+                    Reference = new OpenApiReference
+
                     {
-                          new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference
-                                {
-                                    Type = ReferenceType.SecurityScheme,
-                                    Id = "Bearer"
-                                }
-                            },
-                            new string[] {}
+
+                        Type = ReferenceType.SecurityScheme,
+
+                        Id = "Bearer"
 
                     }
+
+                };
+
+                c.AddSecurityDefinition("Bearer", securitySchema);
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+
+                {
+
+                { securitySchema, new[] { "Bearer" } }
+
                 });
             });
 
+            //var jwtSection = Configuration.GetSection("Jwt:Key");
             services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+
                 option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
             }).AddJwtBearer(options =>
             {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    //ValidateIssuer = true,
-                    //ValidateAudience = true,
+                    ValidateIssuer = false,
+
+                    ValidateAudience = false,
+
                     ValidateLifetime = false,
+
                     ValidateIssuerSigningKey = true,
-                    //ValidIssuer = Configuration["Jwt:Issuer"],
-                    //ValidAudience = Configuration["Jwt:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])) //Configuration["JwtToken:SecretKey"]  
+
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+
                 };
+
             });
         }
     
@@ -111,14 +120,14 @@ namespace FundooApplication
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-            app.UseAuthentication();
+            
             // Swagger Configuration in API  
             app.UseSwagger();
             app.UseSwaggerUI(c =>

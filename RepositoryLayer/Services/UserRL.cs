@@ -51,7 +51,7 @@ namespace RepositoryLayer.Services
         public string GenerateSecurityToken(string email,long id)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("Jwt:Key");
+            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
@@ -81,6 +81,42 @@ namespace RepositoryLayer.Services
                 else
                 {
                     return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public string ForgetPassword(string EmailID)
+        {
+            var emailcheck= fundooContext.User.SingleOrDefault(x=>x.EmailID== EmailID);
+            if(emailcheck!=null)
+            {
+                var token=GenerateSecurityToken(emailcheck.EmailID, emailcheck.UserId);
+                new MSMQ().sendData2Queue(token);
+                return token;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public string ResetPassword(ResetModel resetModel)
+        {
+            try
+            {
+                if(resetModel.Password.Equals(resetModel.ConfirmPassword))
+                {
+                    UserEntity user = fundooContext.User.SingleOrDefault((x => x.EmailID == resetModel.EmailId));
+                    user.Password= resetModel.ConfirmPassword;
+                    fundooContext.SaveChanges();
+                    return "Reset Success";
+                }
+                else
+                {
+                    return "Reset Failed";
                 }
             }
             catch (Exception)
