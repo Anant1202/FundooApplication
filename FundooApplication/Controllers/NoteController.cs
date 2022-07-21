@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace FundooApplication.Controllers
 {
@@ -34,9 +35,9 @@ namespace FundooApplication.Controllers
             }
         }
         [HttpGet("Retrieve")]
-        public IActionResult Get(long id)
+        public IActionResult Get()
         {
-            var result = notesBL.GetNote(id);
+            var result = notesBL.GetNote();
             if (result != null)
             {
                 return this.Ok(new { success = true, message = "Retrieve Successfully", data = result });
@@ -44,6 +45,76 @@ namespace FundooApplication.Controllers
             else
             {
                 return this.BadRequest(new { success = false, message = "Note is not Retrieved" });
+            }
+        }
+        [HttpPut("Update")]
+        public IActionResult Update(UpdateNoteModel updateNoteModel,long NoteId)
+        {
+            long UserId = Convert.ToInt32(User.FindFirst(x => x.Type == "UserId").Value);
+            var result = notesBL.UpdateNote(updateNoteModel,NoteId);
+            if (result != null)
+            {
+                return this.Ok(new { success = true, message = "Update is Successful" });
+            }
+            else
+            {
+                return this.NotFound(new { success = false, message = "Update is Unsuccessful" });
+            }
+        }
+        [HttpDelete("Delete")]
+        public IActionResult DeleteNote(long NoteId)
+        {
+            long UserId = Convert.ToInt32(User.FindFirst(x => x.Type == "UserId").Value);
+            var result = notesBL.DeleteNote(NoteId);
+            if (result != null)
+            {
+                return this.Ok(new { success = true, message = "Delete is Successful" });
+            }
+            else
+            {
+                return this.NotFound(new { success = false, message = "Delete is Unsuccessful" });
+            }
+        }
+        [HttpPost("Archieve")]
+        public IActionResult ArchieveNote(long NoteId)
+        {
+            long userid = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
+            var result = notesBL.Archieve(NoteId);
+            if (result != null)
+            {
+                return this.Ok(new { success = true, message = "Note is Archieved Successfully", data = result });
+            }
+            else
+            {
+                return this.BadRequest(new { success = false, message = "Note is Not Archieved" });
+            }
+        }
+        [HttpPost("Pin")]
+        public IActionResult PinNote(long NoteId)
+        {
+            long userid = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
+            var result = notesBL.Pin(NoteId);
+            if (result != null)
+            {
+                return this.Ok(new { success = true, message = "Note is Pinned Successfully", data = result });
+            }
+            else
+            {
+                return this.BadRequest(new { success = false, message = "Note is Not Pinned" });
+            }
+        }
+        [HttpPost("Trash")]
+        public IActionResult TrashNote(long NoteId)
+        {
+            long userid = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
+            var result = notesBL.Trash(NoteId);
+            if (result != null)
+            {
+                return this.Ok(new { success = true, message = "Note is Trashed Successfully", data = result });
+            }
+            else
+            {
+                return this.BadRequest(new { success = false, message = "Note is Not Trashed" });
             }
         }
     }

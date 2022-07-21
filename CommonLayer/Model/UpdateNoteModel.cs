@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace CommonLayer.Model
 {
-    public class NoteCreateModel
+    public class UpdateNoteModel
     {
         public string Title { get; set; }
         public string Description { get; set; }
@@ -17,6 +16,5 @@ namespace CommonLayer.Model
         public DateTime Remainder { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime Modified { get; set; }
-        
     }
 }

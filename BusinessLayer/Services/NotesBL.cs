@@ -27,11 +27,71 @@ namespace BusinessLayer.Services
                 throw ex;
             }
         }
-        public IEnumerable<NoteEntity> GetNote(long id)
+        public IEnumerable<NoteEntity> GetNote()
+        { 
+            try
+            {
+                return notesRL.GetNote();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public NoteEntity UpdateNote(UpdateNoteModel updateNoteModel,long id)
         {
             try
             {
-                return notesRL.GetNote(id);
+                return notesRL.UpdateNote(updateNoteModel,id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public NoteEntity DeleteNote(long id)
+        {
+            try
+            {
+                return notesRL.DeleteNote(id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public NoteEntity Archieve(long id)
+        {
+            try
+            {
+                return notesRL.Archieve(id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public NoteEntity Pin(long id)
+        {
+            try
+            {
+                return notesRL.Pin(id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public NoteEntity Trash(long id)
+        {
+            try
+            {
+                return notesRL.Trash(id);
             }
             catch (Exception)
             {
