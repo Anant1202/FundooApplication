@@ -17,8 +17,7 @@ namespace CommonLayer.Model
         public DateTime Remainder { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime Modified { get; set; }
-        [ForeignKey("User")]
-        public long UserId { get; set; }
+        
         
     }
 }

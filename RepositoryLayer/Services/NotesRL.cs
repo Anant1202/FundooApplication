@@ -4,6 +4,7 @@ using RepositoryLayer.Entities;
 using RepositoryLayer.Interface;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace RepositoryLayer.Services
@@ -15,7 +16,7 @@ namespace RepositoryLayer.Services
         {
             this.fundooContext = fundooContext;
         }
-        public NoteEntity CreateNote(NoteCreateModel noteCreateModel)
+        public NoteEntity CreateNote(NoteCreateModel noteCreateModel,long userid)
         {
             try
             {
@@ -28,9 +29,9 @@ namespace RepositoryLayer.Services
                 noteEntity.Pin=noteCreateModel.Pin;
                 noteEntity.Trash=noteCreateModel.Trash;
                 noteEntity.Remainder=noteCreateModel.Remainder;
-                noteEntity.CreatedAt=noteCreateModel.CreatedAt;
+                noteEntity.CreatedAt=DateTime.Now;
                 noteEntity.Modified = noteCreateModel.Modified;
-                noteEntity.UserId=noteCreateModel.UserId;
+                noteEntity.UserId=userid;
                 fundooContext.NotesTable.Add(noteEntity);
                 int result = fundooContext.SaveChanges();
                 if (result > 0)
@@ -46,6 +47,20 @@ namespace RepositoryLayer.Services
             {
 
                 throw;
+            }
+        }
+       public IEnumerable<NoteEntity> GetNote(long id)
+        {
+            var data= fundooContext.NotesTable.SingleOrDefault(x =>x.NoteID==id);
+            List<NoteEntity> result = fundooContext.NotesTable.ToList();
+           
+            if (data !=null)
+            {
+                return result;
+            }
+            else
+            {
+                return null;
             }
         }
     }

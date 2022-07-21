@@ -8,7 +8,9 @@ namespace BusinessLayer.Interface
 {
     public interface INotesBL
     {
-        public NoteEntity CreateNote(NoteCreateModel noteCreateModel);
-        
+        public NoteEntity CreateNote(NoteCreateModel noteCreateModel, long userid);
+        public IEnumerable<NoteEntity> GetNote(long id);
+
+
     }
 }

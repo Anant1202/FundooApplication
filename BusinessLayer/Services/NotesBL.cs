@@ -15,16 +15,28 @@ namespace BusinessLayer.Services
         {
             this.notesRL = notesRL;
         }
-        public NoteEntity CreateNote(NoteCreateModel noteCreateModel)
+        public NoteEntity CreateNote(NoteCreateModel noteCreateModel, long userid)
         {
             try
             {
-                return notesRL.CreateNote(noteCreateModel);
+                return notesRL.CreateNote(noteCreateModel,userid);
             }
             catch (Exception ex)
             {
 
                 throw ex;
+            }
+        }
+        public IEnumerable<NoteEntity> GetNote(long id)
+        {
+            try
+            {
+                return notesRL.GetNote(id);
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }
