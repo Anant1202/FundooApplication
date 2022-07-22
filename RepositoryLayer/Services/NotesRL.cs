@@ -1,4 +1,7 @@
-﻿using CommonLayer.Model;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using CommonLayer.Model;
+using Microsoft.AspNetCore.Http;
 using RepositoryLayer.Context;
 using RepositoryLayer.Entities;
 using RepositoryLayer.Interface;
@@ -12,6 +15,9 @@ namespace RepositoryLayer.Services
     public class NotesRL : INotesRL
     {
         private readonly FundooContext fundooContext;
+        public string CLOUD_NAME = "dsjfzwglu";
+        public string API_KEY = "993319574448429";
+        public string API_SECRET = "JKh6h_R_RtQZsZka90Cp-VPPyMo";
         public NotesRL(FundooContext fundooContext)
         {
             this.fundooContext = fundooContext;
@@ -165,6 +171,35 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
+        public NoteEntity Image(long id, IFormFile image)
+        {
+            try
+            {
+                var data = fundooContext.NotesTable.SingleOrDefault(x => x.NoteID == id);
+                if (data != null)
+                {
+                    CloudinaryDotNet.Account account = new CloudinaryDotNet.Account(CLOUD_NAME, API_KEY, API_SECRET);
+                    Cloudinary cloud = new Cloudinary(account);
+                    var imagePath = image.OpenReadStream();
+                    var uploadParams = new ImageUploadParams()
+                    {
+                        File = new FileDescription(image.FileName, imagePath)
+                    };
+                    var uploadresult = cloud.Upload(uploadParams);
+                    data.Image = image.FileName;
+                    fundooContext.NotesTable.Update(data);
+                    int upload = fundooContext.SaveChanges();
+                    if (upload > 0)
+                    {
+                        return data;
+                    }
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
-

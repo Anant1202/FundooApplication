@@ -1,4 +1,5 @@
 ﻿using CommonLayer.Model;
+using Microsoft.AspNetCore.Http;
 using RepositoryLayer.Entities;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,6 @@ namespace BusinessLayer.Interface
         public NoteEntity Archieve(long id);
         public NoteEntity Pin(long id);
         public NoteEntity Trash(long id);
+        public NoteEntity Image(long id, IFormFile image);
     }
 }

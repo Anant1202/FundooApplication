@@ -117,5 +117,18 @@ namespace FundooApplication.Controllers
                 return this.BadRequest(new { success = false, message = "Note is Not Trashed" });
             }
         }
+        [HttpPost("Image")]
+        public IActionResult ImageUpload(long NoteId,IFormFile image)
+        {
+            var result = notesBL.Image(NoteId,image);
+            if (result != null)
+            {
+                return this.Ok(new { message = "Image uploaded Successfully", data = result });
+            }
+            else
+            {
+                return this.BadRequest(new { message = "Image upload Unsuccessful" });
+            }
+        }
     }
 }

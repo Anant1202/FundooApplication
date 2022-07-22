@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer.Model;
+using Microsoft.AspNetCore.Http;
 using RepositoryLayer.Entities;
 using RepositoryLayer.Interface;
 using System;
@@ -92,6 +93,18 @@ namespace BusinessLayer.Services
             try
             {
                 return notesRL.Trash(id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public NoteEntity Image(long id, IFormFile image)
+        {
+            try
+            {
+                return notesRL.Image(id,image);
             }
             catch (Exception)
             {
