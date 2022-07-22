@@ -17,10 +17,10 @@ namespace FundooApplication.Controllers
             this.collabBL = collabBL;
         }
         [HttpPost("Create")]
-        public IActionResult Create(CollabModel collabModel, long userid, long noteid)
+        public IActionResult Create(CollabModel collabModel, long noteid)
         {
-            long id = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
-            var result = collabBL.CreateCollab(collabModel, userid,noteid);
+            long UserId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
+            var result = collabBL.CreateCollab(collabModel, UserId,noteid);
             if (result != null)
             {
                 return this.Ok(new { success = true, message = "Collab is Created Successfully", data = result });
@@ -31,9 +31,9 @@ namespace FundooApplication.Controllers
             }
         }
         [HttpGet("Retrieve")]
-        public IActionResult GetCollab()
+        public IActionResult GetCollab(long NoteID)
         {
-            var result = collabBL.GetCollabDetails();
+            var result = collabBL.GetCollabDetails(NoteID);
             if (result != null)
             {
                 return this.Ok(new { success = true, message = "Retrieve Successfully", data = result });

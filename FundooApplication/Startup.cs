@@ -43,6 +43,8 @@ namespace FundooApplication
             services.AddTransient<INotesRL, NotesRL>();
             services.AddTransient<ICollabBL, CollabBL>();
             services.AddTransient<ICollabRL, CollabRL>();
+            services.AddTransient<ILabelBL, LabelBL>();
+            services.AddTransient<ILabelRL, LabelRL>();
             services.AddMvc();
             // Enable Swagger   
             services.AddSwaggerGen(c =>
@@ -109,6 +111,10 @@ namespace FundooApplication
 
                 };
 
+            });
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "localhost:6379";
             });
         }
     
