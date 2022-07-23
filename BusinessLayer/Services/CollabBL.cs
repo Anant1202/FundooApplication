@@ -27,11 +27,11 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
-        public IEnumerable<CollabEntity> GetCollabDetails(long NoteID)
+        public IEnumerable<CollabEntity> GetCollabDetails()
         {
             try
             {
-                return collabRL.GetCollabDetails(NoteID);
+                return collabRL.GetCollabDetails();
             }
             catch (Exception)
             {

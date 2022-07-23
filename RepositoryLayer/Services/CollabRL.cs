@@ -41,7 +41,7 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        public IEnumerable<CollabEntity> GetCollabDetails(long NoteID)
+        public IEnumerable<CollabEntity> GetCollabDetails()
         {
             return fundooContext.CollabTable.ToList();
         }
