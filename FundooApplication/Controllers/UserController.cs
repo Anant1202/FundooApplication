@@ -3,6 +3,8 @@ using CommonLayer.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Security.Claims;
 
 namespace FundooApplication.Controllers
@@ -12,21 +14,35 @@ namespace FundooApplication.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserBL userBL;
-        public UserController(IUserBL userBL)
+        private readonly ILogger<UserController> logger;
+
+        public UserController(IUserBL userBL, ILogger<UserController> logger)
         {
             this.userBL = userBL;
+            this.logger = logger;
         }
         [HttpPost("Register")]
         public IActionResult Registration(UserRegistrationModel userRegistrationModel)
         {
-            var result = userBL.Register(userRegistrationModel);
-            if(result != null)
+            try
             {
-                return this.Ok(new { success=true,message="Registration is Successful",data=result});
+                var result = userBL.Register(userRegistrationModel);
+                if (result != null)
+                {
+                    return this.Ok(new { success = true, message = "Registration is Successful", data = result });
+                }
+                else
+                {
+                    throw new Exception("Error occured");
+                    return this.BadRequest(new { success = false, message = "Registration is Unsuccessful" });
+                }
+                
             }
-            else
+            catch (Exception ex)
             {
-                return this.BadRequest(new { success = false, message = "Registration is Unsuccessful"});
+                logger.LogError(ex.ToString());
+                return BadRequest(ex.ToString());
+                
             }
         }
         [HttpPost("Login")]

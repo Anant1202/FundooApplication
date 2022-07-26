@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RepositoryLayer.Context;
 using RepositoryLayer.Entities;
@@ -25,12 +26,13 @@ namespace FundooApplication.Controllers
         private readonly INotesBL notesBL;
         private readonly IMemoryCache memoryCache;
         
+
         private readonly IDistributedCache distributedCache;
-        public NoteController(INotesBL notesBL, IMemoryCache memoryCache , IDistributedCache distributedCache)
+        public NoteController(INotesBL notesBL, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.notesBL = notesBL;
             this.memoryCache = memoryCache;
-           
+
             this.distributedCache = distributedCache;
         }
         [HttpPost("Create")]
