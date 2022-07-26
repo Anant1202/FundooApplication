@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace FundooApplication.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -67,7 +67,7 @@ namespace FundooApplication.Controllers
             }
             else
             {
-                return this.NotFound(new { success = false, message = "Reset is Unsuccessful" });
+                return this.Unauthorized(new { success = false, message = "Reset is Unsuccessful" });
             }
         }
     }

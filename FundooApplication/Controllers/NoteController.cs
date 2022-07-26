@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace FundooApplication.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class NoteController : ControllerBase
     {
@@ -71,7 +71,7 @@ namespace FundooApplication.Controllers
             }
             else
             {
-                return this.NotFound(new { success = false, message = "Update is Unsuccessful" });
+                return this.Unauthorized(new { success = false, message = "Update is Unsuccessful" });
             }
         }
         [HttpDelete("Delete")]
@@ -99,7 +99,7 @@ namespace FundooApplication.Controllers
             }
             else
             {
-                return this.BadRequest(new { success = false, message = "Note is Not Archieved" });
+                return this.Unauthorized(new { success = false, message = "Note is Not Archieved" });
             }
         }
         [HttpPost("Pin")]
@@ -113,7 +113,7 @@ namespace FundooApplication.Controllers
             }
             else
             {
-                return this.BadRequest(new { success = false, message = "Note is Not Pinned" });
+                return this.Unauthorized(new { success = false, message = "Note is Not Pinned" });
             }
         }
         [HttpPost("Trash")]
@@ -127,7 +127,7 @@ namespace FundooApplication.Controllers
             }
             else
             {
-                return this.BadRequest(new { success = false, message = "Note is Not Trashed" });
+                return this.Unauthorized(new { success = false, message = "Note is Not Trashed" });
             }
         }
         [HttpPost("Image")]
@@ -140,7 +140,7 @@ namespace FundooApplication.Controllers
             }
             else
             {
-                return this.BadRequest(new { message = "Image upload Unsuccessful" });
+                return this.Unauthorized(new { message = "Image upload Unsuccessful" });
             }
         }
         [HttpGet("redis")]

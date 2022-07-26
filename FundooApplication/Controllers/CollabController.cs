@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace FundooApplication.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class CollabController : ControllerBase
     {
@@ -28,7 +28,7 @@ namespace FundooApplication.Controllers
             this.memoryCache = memoryCache;
             this.distributedCache = distributedCache;
         }
-        [HttpPost("Create")]
+        [HttpPost("CreateCollab")]
         public IActionResult Create(CollabModel collabModel, long noteid)
         {
             long UserId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
@@ -42,7 +42,7 @@ namespace FundooApplication.Controllers
                 return this.BadRequest(new { success = false, message = "Collab is Not Created" });
             }
         }
-        [HttpGet("Retrieve")]
+        [HttpGet("RetrieveCollab")]
         public IActionResult GetCollab()
         {
             var result = collabBL.GetCollabDetails();
@@ -55,7 +55,7 @@ namespace FundooApplication.Controllers
                 return this.BadRequest(new { success = false, message = "Collab is not Retrieved" });
             }
         }
-        [HttpDelete("Delete")]
+        [HttpDelete("DeleteCollab")]
         public IActionResult Delete(long CollabID)
         {
             long UserId = Convert.ToInt32(User.FindFirst(x => x.Type == "UserId").Value);
@@ -69,7 +69,7 @@ namespace FundooApplication.Controllers
                 return this.NotFound(new { success = false, message = "Delete is Unsuccessful" });
             }
         }
-        [HttpGet("redis")]
+        [HttpGet("redisCollab")]
         public async Task<IActionResult> GetAllCustomersUsingRedisCache()
         {
             var cacheKey = "collabList";

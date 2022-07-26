@@ -14,7 +14,8 @@ using System.Threading.Tasks;
 
 namespace FundooApplication.Controllers
 {
-    [Route("api/[controller]")]
+   
+    [Route("[controller]")]
     [ApiController]
     public class LabelController : ControllerBase
     {
@@ -28,7 +29,7 @@ namespace FundooApplication.Controllers
             this.memoryCache = memoryCache;
             this.distributedCache = distributedCache;
         }
-        [HttpPost("Create")]
+        [HttpPost("CreateLabel")]
         public IActionResult Create(LabelModel labelModel, long noteid)
         {
             long UserId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
@@ -42,7 +43,7 @@ namespace FundooApplication.Controllers
                 return this.BadRequest(new { success = false, message = "Label is Not Created" });
             }
         }
-        [HttpGet("Retrieve")]
+        [HttpGet("RetrieveLabel")]
         public IActionResult GetLabel()
         {
             var result = labelBL.GetAllLabel();
@@ -55,7 +56,7 @@ namespace FundooApplication.Controllers
                 return this.BadRequest(new { success = false, message = "Label is not Retrieved" });
             }
         }
-        [HttpPut("Update")]
+        [HttpPut("UpdateLabel")]
         public IActionResult Update(LabelModel labelModel, long LabelID)
         {
             long UserId = Convert.ToInt32(User.FindFirst(x => x.Type == "UserId").Value);
@@ -66,10 +67,10 @@ namespace FundooApplication.Controllers
             }
             else
             {
-                return this.NotFound(new { success = false, message = "Update is Unsuccessful" });
+                return this.Unauthorized(new { success = false, message = "Update is Unsuccessful" });
             }
         }
-        [HttpDelete("Delete")]
+        [HttpDelete("DeleteLabel")]
         public IActionResult Delete(long LabelID)
         {
             long UserId = Convert.ToInt32(User.FindFirst(x => x.Type == "UserId").Value);
@@ -83,7 +84,7 @@ namespace FundooApplication.Controllers
                 return this.NotFound(new { success = false, message = "Delete is Unsuccessful" });
             }
         }
-        [HttpGet("redis")]
+        [HttpGet("redisLabel")]
         public async Task<IActionResult> GetAllCustomersUsingRedisCache()
         {
             var cacheKey = "labelList";

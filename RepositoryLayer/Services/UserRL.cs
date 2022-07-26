@@ -17,10 +17,12 @@ namespace RepositoryLayer.Services
     {
         private readonly FundooContext fundooContext;
         private readonly IConfiguration configuration;
+        public static string SecretKey = "abgiivzxdrtcvbnm";
         public UserRL(FundooContext fundooContext, IConfiguration configuration)
         {
             this.fundooContext = fundooContext;
             this.configuration = configuration;
+           
         }
         public UserEntity Register(UserRegistrationModel userRegistrationModel)
         {
@@ -30,7 +32,7 @@ namespace RepositoryLayer.Services
                 userEntity.FirstName = userRegistrationModel.FirstName;
                 userEntity.LastName = userRegistrationModel.LastName;
                 userEntity.EmailID = userRegistrationModel.EmailID;
-                userEntity.Password = userRegistrationModel.Password;
+                userEntity.Password = EncryptPasswordBase64( userRegistrationModel.Password);
                 fundooContext.User.Add(userEntity);
                 int result = fundooContext.SaveChanges();
                 if(result > 0)
@@ -68,12 +70,23 @@ namespace RepositoryLayer.Services
             return tokenHandler.WriteToken(token);
 
         }
+        public static string EncryptPasswordBase64(string Password)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(Password);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
+        public static string DecryptPasswordBase64(string base64EncodedData)
+        {
+            var base64EncodedBytes = System.Convert.FromBase64String(base64EncodedData);
+            return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+        }
         public string Login(LoginModel loginModel)
         {
             try
             {
-                var data = fundooContext.User.SingleOrDefault(x => x.EmailID == loginModel.EmailID && x.Password == loginModel.Password);
-                if(data != null)
+                var data = fundooContext.User.SingleOrDefault(x => x.EmailID == loginModel.EmailID );
+                string result = DecryptPasswordBase64(data.Password);
+                if (data != null && result==loginModel.Password)
                 {
                     var token = GenerateSecurityToken(data.EmailID, data.UserId);
                     return token;
